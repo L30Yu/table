@@ -1,0 +1,173 @@
+<!DOCTYPE html>  
+<html>  
+<head>   
+    <meta charset="utf-8">  
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
+    <link rel="stylesheet" href="assets/bootstrap-editable.css">
+    <link rel="stylesheet" href="assets/address.css">
+    <script src="assets/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
+    <script src="assets/bootstrap-editable.js"></script>
+    <script src="assets/bootstrap-table-export.js"></script>
+    <script src="assets/bootstrap-table-editable.js"></script>    
+    <script src="assets/FileSaver.min.js"></script>
+    <script src="assets/address.js"></script>
+    <script src="assets/tableExport.js"></script>
+      
+    <style>  
+        .ml10 {
+            margin-left: 10px;
+        }
+        body {
+            margin-top: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+    </style>  
+</head>  
+<body>  
+<div class="alert alert-success" id="eventsResult">
+    Here is the result of event.
+</div>
+<div id="toolbar" class="btn-group">
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addModal" data-tooltip="true" data-placement="bottom" title="Add Permission">
+        <i class="glyphicon glyphicon-plus"></i>
+    </button>
+    <button type="button" class="btn btn-default">
+        <i class="glyphicon glyphicon-heart"></i>
+    </button>
+    <button type="button" class="btn btn-default">
+        <i class="glyphicon glyphicon-trash"></i>
+    </button>
+    <button id="selected-button" class="btn btn-default">getSelections</button>
+</div>
+<table id="table"
+       data-search="true"
+       data-show-refresh="true"
+       data-show-columns="true"
+       data-toolbar="#toolbar"
+       data-show-export="true"
+       data-export-types="['excel']"
+       data-query-params="queryParams"
+       data-click-to-select="true"
+       data-detail-view="true"
+       data-detail-formatter="detailFormatter">
+    
+</table>
+<script>  
+ var $table = $('#table');
+ var $selectedButton = $('#selected-button');
+
+ $(function () {
+
+    $selectedButton.click(function () {
+        alert('getSelections: ' + JSON.stringify($table.bootstrapTable('getSelections')));
+    });
+    $('#table').bootstrapTable({
+        idField: 'name',         
+        url: 'data2.php',              
+        columns: [{
+            field: 'state',
+            checkbox: true,
+            width: '2%'
+        },{
+            field: 'name',
+            title: 'Name',
+            sortable: true,
+            width: '15%'
+        }, {
+            field: 'stargazers_count',
+            title: 'Stars',
+            editable: {
+                type: 'text'
+            },
+            width: '5%'
+        }, {
+            field: 'forks_count',
+            title: 'Forks',
+            editable: {
+                type: 'text'
+            },
+            width: '5%'
+        }, {
+            field: 'aaaa',
+            title: 'Address',
+            editable: {
+                type: 'address',
+                display: function(value) {
+                  if(!value) {
+                    $(this).empty();
+                    return; 
+                  }
+                  var html = '<b>' + $('<div>').text(value.city).html() + '</b>, ' + $('<div>').text(value.street).html() + ' st., bld. ' + $('<div>').text(value.building).html();
+                  $(this).html(html); 
+                }
+            },
+            width: '10%'
+        },{
+            field: 'description',
+            title: 'Description',
+            editable: {
+                type: 'textarea'
+            }
+        },{
+            field: 'action',
+            title: 'Action',
+            formatter: 'actionFormatter',
+            events: 'actionEvents',
+            width: '8%'
+        }]
+    });
+});
+
+ function queryParams() {
+    return {
+        type: 'owner',
+        sort: 'updated',
+        direction: 'desc',
+        per_page: 100,
+        page: 1
+    };
+}
+
+function actionFormatter(value, row, index) {
+    return [
+        '<a class="like" href="javascript:void(0)" title="Like">',
+        '<i class="glyphicon glyphicon-heart"></i>',
+        '</a>',
+        '<a class="edit ml10" href="javascript:void(0)" title="Edit">',
+        '<i class="glyphicon glyphicon-edit"></i>',
+        '</a>',
+        '<a class="remove ml10" href="javascript:void(0)" title="Remove">',
+        '<i class="glyphicon glyphicon-remove"></i>',
+        '</a>'
+    ].join('');
+}
+
+window.actionEvents = {
+    'click .like': function (e, value, row, index) {
+        alert('You click like icon, row: ' + JSON.stringify(row));
+        console.log(value, row, index);
+    },
+    'click .edit': function (e, value, row, index) {
+        alert('You click edit icon, row: ' + JSON.stringify(row));
+        console.log(value, row, index);
+    },
+    'click .remove': function (e, value, row, index) {
+        alert('You click remove icon, row: ' + JSON.stringify(row));
+        console.log(value, row, index);
+    }
+};
+
+function detailFormatter(index, row) {
+    var html = [];
+    $.each(row, function (key, value) {
+        html.push('<p><b>' + key + ':</b> ' + value + '</p>');
+    });
+    return html.join('');
+}
+</script>  
+</body>  
+</html>  
