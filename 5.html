@@ -1,0 +1,113 @@
+<!DOCTYPE html>  
+<html>  
+<head>   
+    <meta charset="utf-8">  
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
+    <link rel="stylesheet" href="assets/bootstrap-editable.css">
+    <link rel="stylesheet" href="assets/address.css">
+
+    <script src="assets/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
+    <script src="assets/bootstrap-editable.js"></script>
+    <script src="assets/bootstrap-table-export.js"></script>
+    <script src="assets/bootstrap-table-editable.js"></script>    
+    <script src="assets/FileSaver.min.js"></script>
+    <script src="assets/jspdf.min.js"></script>
+    <script src="assets/jspdf.plugin.autotable.js"></script>
+    <script src="assets/tableExport.js"></script>
+    <script src="assets/address.js"></script>
+
+      
+    <style>  
+        .row-index {
+            width: 50px;
+            display: inline-block;
+        }
+    </style>  
+</head>  
+<body>  
+<div class="alert alert-success" id="eventsResult">
+    Here is the result of event.
+</div>
+<table id="table"
+       data-search="true"
+       data-show-refresh="true"
+       data-show-columns="true"
+       data-toolbar="#toolbar"
+       data-show-export="true"
+       data-export-types="['excel', 'pdf']"
+       data-export-options='{
+         "fileName": "testo", 
+         "worksheetName": "test1",         
+         "jspdf": {                  
+           "autotable": {
+             "styles": { "rowHeight": 20, "fontSize": 10 },
+             "headerStyles": { "fillColor": 255, "textColor": 0 },
+             "alternateRowStyles": { "fillColor": [60, 69, 79], "textColor": 255 }
+           }
+         }
+       }'
+
+       data-query-params="queryParams"
+       data-pagination="true"
+       data-height="500">
+    
+</table>
+<script>  
+ $(function () {
+    $('#table').bootstrapTable({
+        idField: 'name',
+        url: 'https://api.github.com/users/wenzhixin/repos?type=owner&sort=full_name&direction=asc&per_page=100&page=1',
+        columns: [{
+            field: 'name',
+            title: 'Name'
+        }, {
+            field: 'stargazers_count',
+            title: 'Stars',
+            editable: {
+                type: 'text'
+            }
+        }, {
+            field: 'forks_count',
+            title: 'Forks',
+            editable: {
+                type: 'text'
+            }
+        }, {
+            field: 'forks_count',
+            title: 'Address',
+            editable: {
+                type: 'address',
+                display: function(value) {
+                  if(!value) {
+                    $(this).empty();
+                    return; 
+                  }
+                  var html = '<b>' + $('<div>').text(value.city).html() + '</b>, ' + $('<div>').text(value.street).html() + ' st., bld. ' + $('<div>').text(value.building).html();
+                  $(this).html(html); 
+                }
+            }
+        },{
+            field: 'description',
+            title: 'Description',
+            editable: {
+                type: 'textarea'
+            }
+        }]
+    });
+});
+
+ function queryParams() {
+    return {
+        type: 'owner',
+        sort: 'updated',
+        direction: 'desc',
+        per_page: 100,
+        page: 1
+    };
+}
+</script>  
+</body>  
+</html>  

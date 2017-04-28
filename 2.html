@@ -1,0 +1,110 @@
+<!DOCTYPE html>  
+<html>  
+<head>   
+    <meta charset="utf-8">  
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
+
+    <script src="assets/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
+      
+    <style>  
+        .row-index {
+            width: 50px;
+            display: inline-block;
+        }
+    </style>  
+</head>  
+<body>  
+<div class="container">  
+        <div class="form-inline">
+            <button type="button" 
+                    class="btn btn-default mybtn-top">
+                Scroll to top
+            </button>
+            <button type="button" 
+                    class="btn btn-default mybtn-row">
+                Scroll to row index: 
+            </button>
+                <input type="number" 
+                       class="form-control row-index" 
+                       value="3" min="0">
+            <button type="button" 
+                    class="btn btn-default mybtn-btm">
+                Scroll to bottom
+            </button>
+        </div>
+
+        <div style="padding: 10px; ">
+            <br>
+            <table id="table" data-search="true" data-show-columns="true" data-pagination="true" data-height="250">
+                <thead>
+                    <tr>
+                        <th data-field="stargazers_count" data-sortable="true">Stars</th>
+                        <th data-field="name" data-sortable="true" width="200">Name</th>
+                        <th data-field="forks_count" data-sortable="true">Forks</th>
+                        <th data-field="description" data-sortable="true">Description</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+</div>
+<script>  
+    $(function () {  
+        var data = [{
+            "name": "bootstrap-table",
+                "stargazers_count": "10",
+                "forks_count": "122",
+                "description": "An extended Bootstrap table"
+        }, {
+            "name": "multiple-select",
+                "stargazers_count": "288",
+                "forks_count": "20",
+                "description": "A jQuery plugin to select multiple elements with checkboxes :)"
+        }, {
+            "name": "bootstrap-table",
+                "stargazers_count": "32",
+                "forks_count": "11",
+                "description": "Show/hide password plugin for twitter bootstrap."
+        }, {
+            "name": "bootstrap-table",
+                "stargazers_count": "1",
+                "forks_count": "4",
+                "description": "my blog"
+        }, {
+            "name": "scutech-redmine 1",
+                "stargazers_count": "50",
+                "forks_count": "3",
+                "description": "Redmine notification tools for chrome extension."
+        }];
+
+        $(function () {
+            $('#table').bootstrapTable({
+                data: data
+            });
+
+            $(".mybtn-top").click(function () {
+                $('#table').bootstrapTable('scrollTo', 0);
+            });
+            
+            $(".mybtn-row").click(function () {
+                var index = +$('.row-index').val(),
+                    top = 0;
+                $('#table').find('tbody tr').each(function (i) {
+                    if (i < index) {
+                        top += $(this).height();
+                    }
+                });
+                $('#table').bootstrapTable('scrollTo', top);
+            });
+            
+            $(".mybtn-btm").click(function () {
+                $('#table').bootstrapTable('scrollTo', 'bottom');
+            });
+
+        });
+    });  
+</script>  
+</body>  
+</html>  

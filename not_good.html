@@ -1,0 +1,90 @@
+<!DOCTYPE html>  
+<html>  
+<head>   
+    <meta charset="utf-8">  
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/bootstrap-table/src/bootstrap-table.css">
+    <!-- <link rel="stylesheet" href="assets/examples.css"> -->
+    <!-- <style>
+        [data-field="name"] .th-inner {width: 200px}
+        .th-inner {width: 100px}
+    </style> -->
+    <script src="assets/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
+    <!-- <script src="assets/ga.js"></script>  -->
+  
+    <style>  
+        div.loader .loader-inner {  
+            position: absolute;  
+            left: 50%;  
+            margin: 20px 0 50px -76px;  
+  
+            text-align: center;  
+        }  
+        div.loader>.ball-pulse>div {  
+            background-color: #2f96b4;  
+        }  
+    </style>  
+</head>  
+<body>  
+<div class="container">  
+      
+    <p><button id="button" class="btn btn-default">Refresh from url</button></p>  
+    <table id="table" class="table table-hover" data-classes="table table-hover"  
+           data-striped="true"  data-sort-name="stargazers_count"  
+           data-sort-order="desc">  
+        <thead>  
+        <tr>  
+            <th data-field="id" data-sortable="true">ID</th>  
+            <th data-field="name" data-sortable="true">Item Name</th>  
+            <th data-field="active">Item Price</th>  
+            <th data-field="user_id">Item Price</th>  
+            <th data-field="no_of_reports">Item Price</th>  
+        </tr>  
+        </thead>  
+    </table>  
+</div>
+  
+<script>  
+    $(function () {  
+        var $table = $('#table');  
+        $table.bootstrapTable({data:[]});  
+  
+        $.ajax({  
+            url: 'index.php',  
+            type: 'post',  
+            dataType: 'json',  
+            beforeSend: function () {  
+                $('#table').append('<div class="loader"><div class="loader-inner ball-pulse"><div></div><div></div><div></div></div></div>');  
+            },  
+            success: function (d) {  
+                setTimeout(function () {  
+                    $('#table>div.loader').remove();  
+                    /*$table.bootstrapTable({  
+                        data: d  
+                    });*/  
+  
+                    $table.bootstrapTable('destroy').bootstrapTable({  
+                        data: d  
+                    });  
+                }, 2000);  
+            }  
+        });  
+  
+        /*$table.bootstrapTable({  
+            data: [{  
+                "id": 0,  
+                "name": "Item 0",  
+                "active": 0,  
+                "user_id": 0,  
+                "no_of_reports": 0  
+            }]  
+        });*/  
+        $('#button').click(function () {  
+            $table.bootstrapTable('refresh', {url: 'index.php'});  
+        });  
+    });  
+</script>  
+</body>  
+</html>  
